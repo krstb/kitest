@@ -1,18 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KI Objekt-Erkennung</title>
+
+   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ki-Test</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png"> 
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="light">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <script>
+      // Service Worker Registrierung
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js')
+            .catch(err => console.log('SW Fehler:', err));
+        });
+      }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            text-align: center; 
-            padding: 20px; 
-            background-color: #f0f2f5; 
-            margin: 0;
+        /* Fix für PWA-Ränder und den blauen Balken */
+        html {
+            background-color: #000000 !important;overscroll-behavior-y: none;
         }
-        h2 { color: #1a73e8; }
+        
+        body {
+            background-color: #3289D1 !important; /* Explizit schwarz für den gesamten Body */
+            margin: 0;
+            padding: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+        }
+
         #webcam-container { 
             margin: 20px auto; 
             border: 4px solid #fff; 
