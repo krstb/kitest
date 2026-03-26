@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitest'; // Ändere die Version, um Updates zu erzwingen
+const CACHE_NAME = 'kitest_V01'; // Ändere die Version, um Updates zu erzwingen
 const ASSETS = [
   'index.html',
   'manifest.json',
