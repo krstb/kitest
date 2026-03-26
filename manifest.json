@@ -1,7 +1,7 @@
 {
-  "short_name": "Ton",
-  "name": "Testton",
-  "description": "Testton und Farbe",
+  "short_name": "KI",
+  "name": "KI-Tedr",
+  "description": "KI-Test",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
