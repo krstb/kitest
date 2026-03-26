@@ -3,20 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mein KI Modell</title>
+    <title>KI Objekt-Erkennung</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9; }
-        #webcam-container { margin-top: 20px; border: 2px solid #ccc; display: inline-block; border-radius: 8px; overflow: hidden; }
-        #label-container div { margin: 10px; font-weight: bold; font-size: 1.2rem; color: #333; }
-        button { padding: 10px 20px; font-size: 1rem; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px; }
-        button:hover { background-color: #0056b3; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background-color: #f0f2f5; 
+            margin: 0;
+        }
+        h2 { color: #1a73e8; }
+        #webcam-container { 
+            margin: 20px auto; 
+            border: 4px solid #fff; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: inline-block; 
+            border-radius: 12px; 
+            line-height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        #label-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        #label-container div { 
+            background: white; 
+            padding: 12px 20px; 
+            border-radius: 30px; 
+            min-width: 200px;
+            font-weight: bold; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        button { 
+            padding: 15px 40px; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            background-color: #1a73e8; 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:active { transform: scale(0.95); }
+        button:hover { background-color: #1557b0; }
     </style>
 </head>
 <body>
 
-    <h2>Teachable Machine Image Model</h2>
+    <h2>KI Objekt-Erkennung</h2>
+    <p>Richte die Kamera auf ein Objekt und klicke auf Start.</p>
+    
     <button type="button" onclick="init()">Kamera Starten</button>
     
+    <br>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
 
@@ -24,7 +69,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 
     <script type="text/javascript">
-        // Dein spezieller Link von Teachable Machine
+        // Dein Modell-Link
         const URL = "https://teachablemachine.withgoogle.com/models/Lpnk06HRR/";
 
         let model, webcam, labelContainer, maxPredictions;
@@ -37,14 +82,20 @@
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
 
-            // Webcam Setup
-            const flip = true; 
-            webcam = new tmImage.Webcam(300, 300, flip); 
-            await webcam.setup(); 
+            // Webcam Konfiguration
+            const width = 300;
+            const height = 300;
+            const flip = false; // Bei Rückkamera (environment) meistens 'false' besser
+            
+            webcam = new tmImage.Webcam(width, height, flip);
+            
+            // HIER DIE ANPASSUNG FÜR DIE RÜCKKAMERA:
+            await webcam.setup({ facingMode: "environment" }); 
+            
             await webcam.play();
             window.requestAnimationFrame(loop);
 
-            // Canvas zur Seite hinzufügen
+            // Canvas ins HTML einfügen
             document.getElementById("webcam-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
             for (let i = 0; i < maxPredictions; i++) {
@@ -61,8 +112,9 @@
         async function predict() {
             const prediction = await model.predict(webcam.canvas);
             for (let i = 0; i < maxPredictions; i++) {
-                const classPrediction =
-                    prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
+                // Anzeige als Prozentwert ohne Nachkommastelle
+                const probability = (prediction[i].probability * 100).toFixed(0);
+                const classPrediction = prediction[i].className + ": " + probability + "%";
                 labelContainer.childNodes[i].innerHTML = classPrediction;
             }
         }
